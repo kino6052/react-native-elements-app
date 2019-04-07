@@ -15,7 +15,9 @@ const PricingDrawerItem = createStackNavigator({
           size={30}
           type="entypo"
           iconStyle={{ paddingLeft: 10 }}
-          onPress={navigation.toggleDrawer}
+          onPress={
+            navigation.toggleDrawer 
+          }
         />
       ),
     }),

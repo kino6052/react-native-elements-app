@@ -8,8 +8,11 @@ import {
   Dimensions,
   ScrollView,
   SafeAreaView,
+  TouchableHighlight,
 } from 'react-native';
 import { Avatar, Button, Icon } from 'react-native-elements';
+import Swipeout from 'react-native-swipeout';
+import firebaseApp from '../../helpers/Firebase';
 
 import { cacheFonts } from '../../helpers/AssetsCaching';
 
@@ -60,6 +63,7 @@ export default class ListsScreen1 extends Component {
 
     this.state = {
       fontLoaded: false,
+      todoCards: []
     };
   }
 
@@ -72,6 +76,28 @@ export default class ListsScreen1 extends Component {
     });
 
     this.setState({ fontLoaded: true });
+    this.listenForItems();
+  }
+
+  getRef() {
+    return firebaseApp.database().ref();
+  }
+
+  listenForItems() {
+    let itemsRef = this.getRef().child('todoCards');
+    itemsRef.on('value', (snap) => {
+
+      // get children as an array
+      var todoCards = [];
+      snap.forEach((child) => {
+        todoCards.push(child);
+      });
+
+      this.setState({
+        todoCards
+      });
+
+    });
   }
 
   renderValue(user) {
@@ -134,73 +160,65 @@ export default class ListsScreen1 extends Component {
     }
   }
 
-  renderCard(user, index) {
-    const { name, avatar } = user;
-
+  renderCard(card, index) {
+    let {
+      key
+    } = card;
+    let swipeBtns = [
+      {
+        text: 'Delete',
+        backgroundColor: 'red',
+        underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
+        onPress: () => {
+          this.deleteNote(rowData);
+        },
+      },
+    ];
     return (
-      <View
-        key={index}
-        style={{
-          height: 60,
-          marginHorizontal: 10,
-          marginTop: 10,
-          backgroundColor: 'white',
-          borderRadius: 5,
-          alignItems: 'center',
-          flexDirection: 'row',
-        }}
+      <Swipeout
+        right={swipeBtns}
+        autoClose="true"
+        backgroundColor="transparent"
       >
-        <View style={{ flex: 2, flexDirection: 'row', alignItems: 'center' }}>
-          <View style={{ marginLeft: 15 }}>
-            <Avatar
-              small
-              rounded
-              source={{
-                uri: avatar,
-              }}
-              activeOpacity={0.7}
-            />
-          </View>
-          <Text
-            style={{
-              fontFamily: 'regular',
-              fontSize: 15,
-              marginLeft: 10,
-              color: 'gray',
-            }}
-          >
-            {name}
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginRight: 10,
-          }}
+        <TouchableHighlight
+          underlayColor="rgba(192,192,192,1,0.6)"
+          onPress={() => { this.props.navigation.navigate('Todo', { test: card.key })}}
         >
-          {this.renderValue(user)}
           <View
+            key={key}
             style={{
-              backgroundColor: 'rgba(222,222,222,1)',
-              width: 35,
-              height: 28,
-              borderRadius: 5,
-              justifyContent: 'center',
-              alignItems: 'center',
+              height: 60,
               marginHorizontal: 10,
+              marginTop: 10,
+              backgroundColor: 'white',
+              borderRadius: 5,
+              alignItems: 'center',
+              flexDirection: 'row',
             }}
           >
-            <Icon name="md-person-add" type="ionicon" color="gray" size={20} />
+            <View
+              style={{ flex: 2, flexDirection: 'row', alignItems: 'center' }}
+            >
+              <Text
+                style={{
+                  fontFamily: 'regular',
+                  fontSize: 15,
+                  marginLeft: 10,
+                  color: 'gray',
+                }}
+              >
+                {JSON.stringify(card)}
+              </Text>
+            </View>
           </View>
-        </View>
-      </View>
+        </TouchableHighlight>
+      </Swipeout>
     );
   }
 
-  renderListCards() {
-    return _.map(USERS, (user, index) => {
-      return this.renderCard(user, index);
+  renderTodoCard() {
+    return _.map(this.state.todoCards, (card) => {
+      return this.renderCard(card);
     });
   }
 
@@ -216,121 +234,7 @@ export default class ListsScreen1 extends Component {
               <Text style={styles.nameHeader}>Growing</Text>
             </View>
             <ScrollView style={{ flex: 1, marginBottom: 20 }}>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: 'column',
-                  backgroundColor: 'white',
-                  borderRadius: 5,
-                  alignItems: 'center',
-                  marginHorizontal: 10,
-                  height: 250,
-                  marginBottom: 10,
-                }}
-              >
-                <View style={{ flex: 3, flexDirection: 'row' }}>
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Avatar
-                      width={145}
-                      height={145}
-                      source={{
-                        uri:
-                          'https://s3.amazonaws.com/uifaces/faces/twitter/jsa/128.jpg',
-                      }}
-                      activeOpacity={0.7}
-                      avatarStyle={{ borderRadius: 145 / 2 }}
-                      overlayContainerStyle={{ backgroundColor: 'transparent' }}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <View
-                      style={{
-                        flex: 1,
-                        marginTop: 10,
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontFamily: 'bold',
-                          fontSize: 25,
-                          color: 'rgba(98,93,144,1)',
-                          marginLeft: -15,
-                        }}
-                      >
-                        Paul Allen
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    width: 300,
-                    borderWidth: 0.5,
-                    borderColor: 'rgba(222, 223, 226, 1)',
-                    marginHorizontal: 20,
-                    height: 1,
-                    marginVertical: 10,
-                  }}
-                />
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}
-                >
-                  <View style={{ flex: 1, alignItems: 'center' }}>
-                    <Button
-                      title="View Profile"
-                      buttonStyle={{
-                        height: 33,
-                        width: 120,
-                        backgroundColor: 'rgba(222, 223, 226, 1)',
-                        borderRadius: 5,
-                      }}
-                      titleStyle={{
-                        fontFamily: 'regular',
-                        fontSize: 13,
-                        color: 'gray',
-                      }}
-                      onPress={() => console.log('aye')}
-                      underlayColor="transparent"
-                    />
-                  </View>
-                  <View style={{ flex: 1, alignItems: 'center' }}>
-                    <Button
-                      title="Add User"
-                      buttonStyle={{
-                        height: 33,
-                        width: 120,
-                        backgroundColor: 'rgba(113, 154, 112, 1)',
-                        borderRadius: 5,
-                      }}
-                      titleStyle={{
-                        fontFamily: 'regular',
-                        fontSize: 13,
-                        color: 'white',
-                      }}
-                      onPress={() => console.log('aye')}
-                      underlayColor="transparent"
-                    />
-                  </View>
-                </View>
-              </View>
-              {this.renderListCards()}
+              {this.renderTodoCard()}
             </ScrollView>
           </SafeAreaView>
         ) : (

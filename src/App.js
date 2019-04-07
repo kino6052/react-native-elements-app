@@ -1,13 +1,13 @@
 import React from 'react';
 import AppLoading from "./components/AppLoading";
 import { View, Image, Dimensions } from 'react-native';
-import { createAppContainer, createDrawerNavigator, DrawerItems } from 'react-navigation';
+import { createAppContainer, createDrawerNavigator, DrawerItems, createStackNavigator, createSwitchNavigator } from 'react-navigation';
 import {cacheAssets,cacheFonts} from "./helpers/AssetsCaching";
 
 import Components from './drawer/components';
 import Ratings from './drawer/ratings';
 import Pricing from './drawer/pricing';
-import Login from './drawer/login';
+import Login from './views/login';
 import Profile from './drawer/profile';
 import Lists from './drawer/lists';
 import Settings from './drawer/settings';
@@ -31,12 +31,18 @@ const CustomDrawerContentComponent = props => (
   </View>
 );
 
-const MainRoot = createAppContainer(createDrawerNavigator(
+const AuthStack = createStackNavigator(
   {
     Login: {
       path: '/login',
       screen: Login,
     },
+    initialRouteName: 'Login'
+  }
+)
+
+const AppStack = createDrawerNavigator(
+  {
     Profile: {
       path: '/profile',
       screen: Profile,
@@ -63,7 +69,7 @@ const MainRoot = createAppContainer(createDrawerNavigator(
     },
   },
   {
-    initialRouteName: 'Components',
+    initialRouteName: 'Lists',
     contentOptions: {
       activeTintColor: '#548ff7',
       activeBackgroundColor: 'transparent',
@@ -77,7 +83,19 @@ const MainRoot = createAppContainer(createDrawerNavigator(
     drawerWidth: Math.min(WINDOW_WIDTH * 0.8, 300),
     contentComponent: CustomDrawerContentComponent,
   }
-));
+);
+
+const MainRoot = createAppContainer(
+  createSwitchNavigator(
+    {
+      App: AppStack,
+      Auth: AuthStack
+    },
+    {
+      initialRouteName: 'Auth'
+    }
+  )
+);
 
 export default class AppContainer extends React.Component {
   state = {

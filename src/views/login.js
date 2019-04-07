@@ -16,10 +16,7 @@ export default class Login extends Component {
     return (
       <View style={styles.container}>
         <ScrollView horizontal pagingEnabled decelerationRate={0.993}>
-          <LoginScreen3 />
-          <LoginScreen1 />
-          <LoginScreen2 />
-          <LoginScreen4 />
+          <LoginScreen1 navigation={this.props.navigation}/>
         </ScrollView>
       </View>
     );

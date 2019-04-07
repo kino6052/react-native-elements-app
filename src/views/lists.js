@@ -10,11 +10,11 @@ export default class Lists extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView horizontal pagingEnabled decelerationRate={0.993}>
-          <ListsScreen1 />
-          <ListsScreen2 />
+        <ScrollView  pagingEnabled decelerationRate={0.993}>
+          <ListsScreen1 navigation={this.props.navigation}/>
+          {/* <ListsScreen2 />
           <ListsScreen3 />
-          <ListsScreen4 />
+          <ListsScreen4 /> */}
         </ScrollView>
       </View>
     );

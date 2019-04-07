@@ -19,6 +19,9 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "facebookScheme": "fb2090677567654194",
+    "facebookAppId": "2090677567654194",
+    "facebookDisplayName": "lena-example-app"
   }
 }

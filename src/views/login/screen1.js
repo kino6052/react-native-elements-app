@@ -5,7 +5,10 @@ import {
   View,
   ImageBackground,
   Dimensions,
+  Platform,
+  Alert
 } from 'react-native';
+import { Facebook, Constants } from 'expo';
 import { Input, Button, Icon } from 'react-native-elements';
 
 import {cacheFonts} from "../../helpers/AssetsCaching";
@@ -28,6 +31,35 @@ export default class LoginScreen1 extends Component {
       showLoading: false,
     };
   }
+  async logIn() {
+    try {
+      const {
+        type,
+        token,
+        expires,
+        permissions,
+        declinedPermissions,
+      } = await Facebook.logInWithReadPermissionsAsync('2090677567654194', {
+        permissions: ['public_profile'],
+        behavior: this.isAStandaloneApp() ? 'native' : 'web'
+      });
+      if (type === 'success') {
+        // Get the user's name using Facebook's Graph API
+        const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
+        const r = await response.json();
+        console.log(r);
+        Alert.alert('Logged in!', `Hi ${(await response.json()).name}!`);
+      } else {
+        // type === 'cancel'
+      }
+    } catch ({ message }) {
+      alert(`Facebook Login Error: ${message}`);
+    }
+  }
+
+  isAStandaloneApp = () => {
+    return !(Platform.OS === 'ios' && Constants.appOwnership === 'expo');
+  }
 
   async componentDidMount() {
     await cacheFonts({
@@ -46,12 +78,16 @@ export default class LoginScreen1 extends Component {
     return re.test(email);
   }
 
-  submitLoginCredentials() {
+  async submitLoginCredentials() {
     const { showLoading } = this.state;
 
     this.setState({
       showLoading: !showLoading,
     });
+
+    // await this.logIn()
+
+    this.props.navigation.navigate('App');
   }
 
   render() {

@@ -6,7 +6,14 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { PricingCard, Text } from 'react-native-elements';
 
 class Pricing extends Component {
-  render() {
+  constructor(props) {
+    super(props);
+    console.log(this.props.navigation.navigate);
+  }
+  componentDidMount() {
+    
+  }
+  render() { 
     return (
       <ScrollView style={{ backgroundColor: 'white' }}>
         <View style={styles.hero}>
