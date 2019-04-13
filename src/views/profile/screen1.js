@@ -103,7 +103,7 @@ export default class LoginScreen1 extends Component {
       <SafeAreaView style={{ flex: 1 }}>
         <StatusBar barStyle="light-content" />
         {this.state.fontLoaded ? (
-          <View style={{ flex: 1, backgroundColor: 'rgba(47,44,60,1)' }}>
+          <View style={{ flex: 1, backgroundColor: 'white' }}>
             <View style={styles.statusBar} />
             <View style={styles.navBar}>
               <Text style={styles.nameHeader}>{this.state.name}</Text>
@@ -172,7 +172,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   nameHeader: {
-    color: 'white',
     fontSize: 22,
     textAlign: 'center',
   },

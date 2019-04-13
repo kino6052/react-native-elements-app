@@ -17,7 +17,7 @@ import {cacheFonts} from "../../helpers/AssetsCaching";
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-const BG_IMAGE = require('../../../assets/images/bg_screen1.jpg');
+const BG_IMAGE = require('../../../assets/images/bg_screen0.jpg');
 
 export default class LoginScreen1 extends Component {
   constructor(props) {
@@ -110,73 +110,15 @@ export default class LoginScreen1 extends Component {
             <View style={styles.loginView}>
               <View style={styles.loginTitle}>
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.travelText}>TRAVEL</Text>
+                  <Text style={styles.travelText}>TODO</Text>
                   <Text style={styles.plusText}>+</Text>
                 </View>
                 <View style={{ marginTop: -10 }}>
-                  <Text style={styles.travelText}>LEISURE</Text>
+                  <Text style={styles.travelText}>APP</Text>
                 </View>
               </View>
-              <View style={styles.loginInput}>
-                <Input
-                  leftIcon={
-                    <Icon
-                      name="user-o"
-                      type="font-awesome"
-                      color="rgba(171, 189, 219, 1)"
-                      size={25}
-                    />
-                  }
-                  containerStyle={{ marginVertical: 10 }}
-                  onChangeText={email => this.setState({ email })}
-                  value={email}
-                  inputStyle={{ marginLeft: 10, color: 'white' }}
-                  keyboardAppearance="light"
-                  placeholder="Email"
-                  autoFocus={false}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  keyboardType="email-address"
-                  returnKeyType="next"
-                  ref={input => (this.emailInput = input)}
-                  onSubmitEditing={() => {
-                    this.setState({ email_valid: this.validateEmail(email) });
-                    this.passwordInput.focus();
-                  }}
-                  blurOnSubmit={false}
-                  placeholderTextColor="white"
-                  errorStyle={{ textAlign: 'center', fontSize: 12 }}
-                  errorMessage={
-                    email_valid ? null : 'Please enter a valid email address'
-                  }
-                />
-                <Input
-                  leftIcon={
-                    <Icon
-                      name="lock"
-                      type="font-awesome"
-                      color="rgba(171, 189, 219, 1)"
-                      size={25}
-                    />
-                  }
-                  containerStyle={{ marginVertical: 10 }}
-                  onChangeText={password => this.setState({ password })}
-                  value={password}
-                  inputStyle={{ marginLeft: 10, color: 'white' }}
-                  secureTextEntry={true}
-                  keyboardAppearance="light"
-                  placeholder="Password"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  keyboardType="default"
-                  returnKeyType="done"
-                  ref={input => (this.passwordInput = input)}
-                  blurOnSubmit={true}
-                  placeholderTextColor="white"
-                />
-              </View>
               <Button
-                title="LOG IN"
+                title="FACEBOOK LOGIN"
                 activeOpacity={1}
                 underlayColor="transparent"
                 onPress={this.submitLoginCredentials.bind(this)}
@@ -194,17 +136,6 @@ export default class LoginScreen1 extends Component {
                 containerStyle={{ marginVertical: 10 }}
                 titleStyle={{ fontWeight: 'bold', color: 'white' }}
               />
-              <View style={styles.footerView}>
-                <Text style={{ color: 'grey' }}>New here?</Text>
-                <Button
-                  title="Create an Account"
-                  clear
-                  activeOpacity={0.5}
-                  titleStyle={{ color: 'white', fontSize: 15 }}
-                  containerStyle={{ marginTop: -10 }}
-                  onPress={() => console.log('Account created')}
-                />
-              </View>
             </View>
           ) : (
             <Text>Loading...</Text>
@@ -229,7 +160,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loginView: {
-    marginTop: 150,
     backgroundColor: 'transparent',
     width: 250,
     height: 400,

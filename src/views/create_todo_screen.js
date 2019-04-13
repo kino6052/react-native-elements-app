@@ -23,12 +23,8 @@ export class CreateTodoScreen extends React.Component {
     }
 
     static navigationOptions = ({ navigation, navigationOptions }) => {
-      const { params } = navigation.state;
-  
       return {
-        title: "Create a ToDo Card",
-        /* These values are used instead of the shared configuration! */
-        
+        title: "Create Card"
       };
     };
 
@@ -56,12 +52,12 @@ export class CreateTodoScreen extends React.Component {
         <View style={styles.container}>
           <View style={styles.headerContainer}>
             <Icon color="white" name="check" type="font-awesome" size={62} />
-            <Text style={styles.heading}>Create a ToDo Card</Text>
+            <Text style={styles.heading}>Create a Card</Text>
           </View>
           <Input
             containerStyle={{ width: '90%' }}
-            placeholder="Input with label"
-            label="ToDo Card Name"
+            placeholder="Card Name"
+            label="Card Name"
             labelStyle={{ marginTop: 16 }}
             onChangeText={(text) => { this.setState({ newTodoCard: text })}}
           />
@@ -70,7 +66,7 @@ export class CreateTodoScreen extends React.Component {
               loading={false}
               loadingProps={{ size: 'small', color: 'white' }}
               buttonStyle={{
-                backgroundColor: '#4F80E1',
+                backgroundColor: '#FF9800',
                 borderRadius: 5,
                 top: 24
               }}
@@ -96,7 +92,7 @@ export class CreateTodoScreen extends React.Component {
         justifyContent: 'center',
         alignItems: 'center',
         padding: 40,
-        backgroundColor: '#4F80E1',
+        backgroundColor: '#FF9800',
         marginBottom: 20,
       },
     heading: {

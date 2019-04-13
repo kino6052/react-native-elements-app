@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Text, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
-import { Input, Icon } from 'react-native-elements';
+import { Input, Icon, Button } from 'react-native-elements';
 import firebaseApp from '../helpers/Firebase';
 import { ListItem } from '../components/ListItem';
 import Swipeout from 'react-native-swipeout';
+import { white } from 'ansi-colors';
 
 export class TodoScreen extends React.Component {
     constructor(props) {
@@ -63,7 +64,7 @@ export class TodoScreen extends React.Component {
         {
           text: 'Delete',
           backgroundColor: 'red',
-          underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
+          underlayColor: 'white',
           onPress: () => {
             this.deleteTodo(todo.key);
           },
@@ -73,7 +74,7 @@ export class TodoScreen extends React.Component {
         <Swipeout
           key={todo.key}
           right={swipeBtns}
-          autoClose="true"
+          autoClose={true}
           backgroundColor="transparent"
         >
           <ListItem
@@ -123,18 +124,19 @@ export class TodoScreen extends React.Component {
                         this.setState({ newTodo: text });
                       }}
                       rightIcon={
-                        <Icon
-                          name="plus"
-                          type="entypo"
-                          color="#86939e"
-                          size={25}
+                        <Button
+                          style={{ width: 100, height: "100%", borderRadius: 0, backgroundColor: '#FF9800', color: 'white' }}
+                          
+                          iconRight={true}
                           onPress={() => {
                             this.saveNewTodo();
                           }}
-                        />
+                          title="Add"
+                        >
+                        </Button>
                       }
                       containerStyle={styles.inputContainerStyle}
-                      placeholder="Add a new Todo"
+                      placeholder="Add new Todo"
                     />
                 </ScrollView>
               </SafeAreaView>

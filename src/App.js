@@ -1,16 +1,12 @@
 import React from 'react';
 import AppLoading from "./components/AppLoading";
-import { View, Image, Dimensions } from 'react-native';
+import { View, Text, Dimensions, StatusBar } from 'react-native';
 import { createAppContainer, createDrawerNavigator, DrawerItems, createStackNavigator, createSwitchNavigator } from 'react-navigation';
 import {cacheAssets,cacheFonts} from "./helpers/AssetsCaching";
 
-import Components from './drawer/components';
-import Ratings from './drawer/ratings';
-import Pricing from './drawer/pricing';
 import Login from './views/login';
 import Profile from './drawer/profile';
 import Lists from './drawer/lists';
-import Settings from './drawer/settings';
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
 
@@ -19,11 +15,7 @@ const CustomDrawerContentComponent = props => (
     <View
       style={{ marginTop: 40, justifyContent: 'center', alignItems: 'center' }}
     >
-      <Image
-        source={require('./images/logo.png')}
-        style={{ width: Math.min(WINDOW_WIDTH * 0.57, 200) }}
-        resizeMode="contain"
-      />
+      <Text style={{ fontSize: 24, color: "white" }}>TODO APP</Text>
     </View>
     <View style={{ marginLeft: 10 }}>
       <DrawerItems {...props} />
@@ -36,6 +28,9 @@ const AuthStack = createStackNavigator(
     Login: {
       path: '/login',
       screen: Login,
+      navigationOptions: {
+        header: null,
+      }
     },
     initialRouteName: 'Login'
   }
@@ -50,23 +45,7 @@ const AppStack = createDrawerNavigator(
     Lists: {
       path: '/lists',
       screen: Lists,
-    },
-    Components: {
-      path: '/components',
-      screen: Components,
-    },
-    Ratings: {
-      path: '/ratings',
-      screen: Ratings,
-    },
-    Pricing: {
-      path: '/pricing',
-      screen: Pricing,
-    },
-    Settings: {
-      path: '/settings',
-      screen: Settings,
-    },
+    }
   },
   {
     initialRouteName: 'Lists',
@@ -125,6 +104,10 @@ export default class AppContainer extends React.Component {
     });
 
     await Promise.all([imageAssets, fontAssets]);
+  }
+
+  componentDidMount() {
+    StatusBar.setHidden(true);
   }
 
   render() {

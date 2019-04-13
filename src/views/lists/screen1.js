@@ -76,7 +76,7 @@ export default class ListsScreen1 extends Component {
       {
         text: 'Delete',
         backgroundColor: 'red',
-        underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
+        underlayColor: 'white',
         onPress: () => {
           this.deleteTodoCard(card);
         },
@@ -86,11 +86,11 @@ export default class ListsScreen1 extends Component {
       <Swipeout
         right={swipeBtns}
         key={key}
-        autoClose="true"
+        autoClose={true}
         backgroundColor="transparent"
       >
         <TouchableHighlight
-          underlayColor="rgba(192,192,192,1,0.6)"
+          underlayColor="white"
           onPress={() => { this.props.navigation.navigate('Todo', { key: card.key })}}
         >
           <ListItem
@@ -98,7 +98,7 @@ export default class ListsScreen1 extends Component {
               friction={90}
               tension={100}
               activeScale={0.95}
-              leftAvatar={{ rounded: true, source: { uri: "" } }}
+              leftAvatar={{ rounded: true }}
               key={key}
               linearGradientProps={{
                 colors: ['#FF9800', '#F44336'],
