@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet, Text, Dimensions } from 'react-native';
+import { View, ScrollView, StyleSheet, Text, Dimensions, AsyncStorage } from 'react-native';
+import firebaseApp from '../helpers/Firebase';
 import {
   Input,
   SearchBar,
@@ -9,6 +10,18 @@ import {
 } from 'react-native-elements';
 
 export class CreateTodoScreen extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        newTodoCard: ''
+      }
+    }
+
+    async componentDidMount() {
+      const name = await AsyncStorage.getItem('name');
+      this.setState({name});
+    }
+
     static navigationOptions = ({ navigation, navigationOptions }) => {
       const { params } = navigation.state;
   
@@ -18,6 +31,20 @@ export class CreateTodoScreen extends React.Component {
         
       };
     };
+
+    getRef() {
+      return firebaseApp.database().ref();
+    }
+  
+    saveNewTodoCard() {
+      let itemsRef = this.getRef().child('todoCards');
+      itemsRef.push({
+        name: this.state.newTodoCard,
+        createdBy: this.state.name
+      });
+      // this.props.navigation.navigate('Lists');
+      this.props.navigation.goBack();
+    }
   
     render() {
       /* 2. Read the params from the navigation state */
@@ -36,6 +63,7 @@ export class CreateTodoScreen extends React.Component {
             placeholder="Input with label"
             label="ToDo Card Name"
             labelStyle={{ marginTop: 16 }}
+            onChangeText={(text) => { this.setState({ newTodoCard: text })}}
           />
           <Button
               title="Add"
@@ -48,14 +76,12 @@ export class CreateTodoScreen extends React.Component {
               }}
               titleStyle={{ fontWeight: 'bold', fontSize: 23 }}
               containerStyle={{ marginVertical: 10, height: 50, width: 230 }}
-              onPress={() => console.log('aye')}
+              onPress={() => this.saveNewTodoCard()}
               underlayColor="transparent"
             />
         </View>
       );
     }
-
-    
   }
 
   const styles = StyleSheet.create({

@@ -6,7 +6,8 @@ import {
   ImageBackground,
   Dimensions,
   Platform,
-  Alert
+  Alert,
+  AsyncStorage
 } from 'react-native';
 import { Facebook, Constants } from 'expo';
 import { Input, Button, Icon } from 'react-native-elements';
@@ -32,28 +33,28 @@ export default class LoginScreen1 extends Component {
     };
   }
   async logIn() {
-    try {
+    const {
+      type,
+      token,
+      expires,
+      permissions,
+      declinedPermissions,
+    } = await Facebook.logInWithReadPermissionsAsync('2090677567654194', {
+      permissions: ['public_profile'],
+      behavior: 'web'
+    });
+    if (type === 'success') {
+      // Get the user's name using Facebook's Graph API
+      await AsyncStorage.setItem('token', token);
+      const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
       const {
-        type,
-        token,
-        expires,
-        permissions,
-        declinedPermissions,
-      } = await Facebook.logInWithReadPermissionsAsync('2090677567654194', {
-        permissions: ['public_profile'],
-        behavior: this.isAStandaloneApp() ? 'native' : 'web'
-      });
-      if (type === 'success') {
-        // Get the user's name using Facebook's Graph API
-        const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
-        const r = await response.json();
-        console.log(r);
-        Alert.alert('Logged in!', `Hi ${(await response.json()).name}!`);
-      } else {
-        // type === 'cancel'
-      }
-    } catch ({ message }) {
-      alert(`Facebook Login Error: ${message}`);
+        name,
+        id
+      } = await response.json();
+      await AsyncStorage.setItem('name', name);
+      await AsyncStorage.setItem('id', id);
+    } else {
+      throw new Error('Error');
     }
   }
 
@@ -70,6 +71,11 @@ export default class LoginScreen1 extends Component {
     });
 
     this.setState({ fontLoaded: true });
+
+    const token = await AsyncStorage.getItem('token');
+    if (token) {
+      this.props.navigation.navigate('App');
+    }
   }
 
   validateEmail(email) {
@@ -85,9 +91,13 @@ export default class LoginScreen1 extends Component {
       showLoading: !showLoading,
     });
 
-    // await this.logIn()
+    try {
+      await this.logIn()
+      this.props.navigation.navigate('App');
+    } catch (e) {
+      alert(e.message);
+    }
 
-    this.props.navigation.navigate('App');
   }
 
   render() {

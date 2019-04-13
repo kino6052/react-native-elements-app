@@ -1,13 +1,16 @@
 import React from 'react';
 import { View, Text, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { Input, Icon } from 'react-native-elements';
 import firebaseApp from '../helpers/Firebase';
 import { ListItem } from '../components/ListItem';
+import Swipeout from 'react-native-swipeout';
 
 export class TodoScreen extends React.Component {
     constructor(props) {
       super(props)
       this.state = {
-        todos: []
+        todos: [],
+        newTodo: ''
       };
       this.key = this.props.navigation.state.params.key;
     }
@@ -29,6 +32,15 @@ export class TodoScreen extends React.Component {
       return firebaseApp.database().ref();
     }
   
+    saveNewTodo() {
+      let itemsRef = this.getRef().child('todoCards').child(this.key).child('todos');
+      itemsRef.push({
+        title: this.state.newTodo,
+        checked: false
+      });
+      this.setState({newTodo: ''});
+    }
+
     listenForTodos() {
       let itemsRef = this.getRef().child('todoCards').child(this.key).child('todos');
       itemsRef.on('value', (snap) => {
@@ -36,7 +48,7 @@ export class TodoScreen extends React.Component {
         // get children as an array
         var todos = [];
         snap.forEach((child) => {
-          todos.push(child.val());
+          todos.push({ ...child.val(), key: child.key });
         });
         
         this.setState({
@@ -47,14 +59,43 @@ export class TodoScreen extends React.Component {
     }
 
     renderTodo(todo) {
-      console.log(todo);
+      let swipeBtns = [
+        {
+          text: 'Delete',
+          backgroundColor: 'red',
+          underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
+          onPress: () => {
+            this.deleteTodo(todo.key);
+          },
+        },
+      ];
       return (
-        <ListItem
-          title={todo.title}
-          checkBox={{ checked: todo.checked }}
-          bottomDivider
-        />
+        <Swipeout
+          key={todo.key}
+          right={swipeBtns}
+          autoClose="true"
+          backgroundColor="transparent"
+        >
+          <ListItem
+            title={todo.title}
+            checkBox={{ checked: todo.checked, onPress: () => this.checkTodo(todo) }}
+            bottomDivider
+          />
+        </Swipeout>
       );
+    }
+
+    deleteTodo(id) {
+      let itemsRef = this.getRef().child('todoCards').child(this.key).child('todos').child(id);
+      itemsRef.set(null);
+    }
+
+    checkTodo(todo) {
+      let itemsRef = this.getRef().child('todoCards').child(this.key).child('todos').child(todo.key);
+      itemsRef.set({
+        title: todo.title,
+        checked: !todo.checked
+      });
     }
   
     render() {
@@ -76,6 +117,25 @@ export class TodoScreen extends React.Component {
                         return this.renderTodo(todo);
                       })
                     }
+                    <Input
+                      value={this.state.newTodo}
+                      onChangeText={(text) => {
+                        this.setState({ newTodo: text });
+                      }}
+                      rightIcon={
+                        <Icon
+                          name="plus"
+                          type="entypo"
+                          color="#86939e"
+                          size={25}
+                          onPress={() => {
+                            this.saveNewTodo();
+                          }}
+                        />
+                      }
+                      containerStyle={styles.inputContainerStyle}
+                      placeholder="Add a new Todo"
+                    />
                 </ScrollView>
               </SafeAreaView>
           </View>
@@ -93,5 +153,9 @@ export class TodoScreen extends React.Component {
     scrollView: {
       flex: 1,
       justifyContent: 'space-between'
-    }
+    },
+    inputContainerStyle: {
+      marginTop: 16,
+      width: '100%',
+    },
   });

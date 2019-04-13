@@ -4,13 +4,10 @@ import Swipeout from 'react-native-swipeout';
 import ProfileScreen1 from './profile/screen1';
 
 export default class Profile extends Component {
-  
   render() {
-    
     return (
       <View style={styles.container}>
-        
-        <ProfileScreen1 />
+        <ProfileScreen1 navigation={this.props.navigation}/>
       </View>
     );
   }
