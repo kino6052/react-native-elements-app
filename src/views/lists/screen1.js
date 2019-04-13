@@ -11,10 +11,12 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import { Avatar, Button, Icon } from 'react-native-elements';
+import {ListItem} from "../../components/ListItem";
 import Swipeout from 'react-native-swipeout';
 import firebaseApp from '../../helpers/Firebase';
-
+import TouchableScale from 'react-native-touchable-scale';
 import { cacheFonts } from '../../helpers/AssetsCaching';
+import {LinearGradient} from "../../components/LinearGradient";
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -90,7 +92,7 @@ export default class ListsScreen1 extends Component {
       // get children as an array
       var todoCards = [];
       snap.forEach((child) => {
-        todoCards.push(child);
+        todoCards.push({ ...child.val(), key: child.key });
       });
 
       this.setState({
@@ -162,7 +164,9 @@ export default class ListsScreen1 extends Component {
 
   renderCard(card, index) {
     let {
-      key
+      key,
+      name,
+      todos
     } = card;
     let swipeBtns = [
       {
@@ -174,6 +178,7 @@ export default class ListsScreen1 extends Component {
         },
       },
     ];
+    console.log(card);
     return (
       <Swipeout
         right={swipeBtns}
@@ -182,35 +187,33 @@ export default class ListsScreen1 extends Component {
       >
         <TouchableHighlight
           underlayColor="rgba(192,192,192,1,0.6)"
-          onPress={() => { this.props.navigation.navigate('Todo', { test: card.key })}}
+          onPress={() => { this.props.navigation.navigate('Todo', { key: card.key })}}
         >
-          <View
-            key={key}
-            style={{
-              height: 60,
-              marginHorizontal: 10,
-              marginTop: 10,
-              backgroundColor: 'white',
-              borderRadius: 5,
-              alignItems: 'center',
-              flexDirection: 'row',
-            }}
-          >
-            <View
-              style={{ flex: 2, flexDirection: 'row', alignItems: 'center' }}
-            >
-              <Text
-                style={{
-                  fontFamily: 'regular',
-                  fontSize: 15,
-                  marginLeft: 10,
-                  color: 'gray',
-                }}
-              >
-                {JSON.stringify(card)}
-              </Text>
-            </View>
-          </View>
+          <ListItem
+              component={TouchableScale}
+              friction={90}
+              tension={100}
+              activeScale={0.95}
+              leftAvatar={{ rounded: true, source: { uri: "" } }}
+              key={key}
+              linearGradientProps={{
+                colors: ['#FF9800', '#F44336'],
+                start: [1, 0],
+                end: [0.2, 0],
+              }}
+              ViewComponent={LinearGradient}
+              title={card.name}
+              titleStyle={{ color: 'white', fontWeight: 'bold' }}
+              subtitleStyle={{ color: 'white' }}
+              subtitle={`${card.todos.length} Todos`}
+              chevronColor="white"
+              chevron
+              containerStyle={{
+                marginHorizontal: 16,
+                marginVertical: 8,
+                borderRadius: 8,
+              }}
+            />
         </TouchableHighlight>
       </Swipeout>
     );
@@ -224,14 +227,14 @@ export default class ListsScreen1 extends Component {
 
   render() {
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         {this.state.fontLoaded ? (
           <SafeAreaView
             style={{ flex: 1, backgroundColor: 'rgba(241,240,241,1)' }}
           >
             <View style={styles.statusBar} />
             <View style={styles.navBar}>
-              <Text style={styles.nameHeader}>Growing</Text>
+              <Text style={styles.nameHeader}>Todos</Text>
             </View>
             <ScrollView style={{ flex: 1, marginBottom: 20 }}>
               {this.renderTodoCard()}
