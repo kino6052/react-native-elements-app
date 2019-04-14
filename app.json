@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "react-native-elements-app",
-    "slug": "react-native-elements-app",
-    "description": "A demo app for React Native Elements UI Library",
+    "name": "Todo App",
+    "description": "A demo app using React Native and React Native Elements",
+    "slug": "todoapp",
     "privacy": "public",
     "sdkVersion": "32.0.0",
     "platforms": ["ios", "android"],
@@ -18,7 +18,11 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.novik.todo"
+    },
+    "android": {
+      "package": "com.novik.todo"
     },
     "facebookScheme": "fb2090677567654194",
     "facebookAppId": "2090677567654194",
